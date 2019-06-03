@@ -1,0 +1,29 @@
+<?php
+/********************************************************/
+/*			WhatsApp Activity V1.0					*/
+/*			By Jonathan Fraile	- 					*/
+/********************************************************/
+require '/app/vendor/autoload.php';
+use Twilio\Rest\Client;
+$json4 = file_get_contents('php://input'); 
+$object = json_decode($json4, true);
+$journey = $object['inArguments'][0]['message'];
+$tel = $object['inArguments'][1]['telefono'];
+$keyword = $object['inArguments'][2]['keyword'];
+$From = 'whatsapp:+14155238886';
+$status = $journey->status; 
+$sid  = "AC0422bbc4c4f009f3cddc36ef3da8c88b"; 
+		$token = "dfd2d0c4cc228807e21eb0892b791b32"; 
+		$twilio = new Client($sid, $token); 
+		$message = $twilio->messages 
+                  ->create("whatsapp:+".$tel, // to 
+                           array( 
+                               "from" => $From,       
+                               "body" => $journey,
+				"statusCallback" => "https://pub.s10.exacttarget.com/svrj3j5s22v?phone=".$tel."&keyword=".$keyword."&message=".rawurlencode($journey)
+							 
+				)
+			   ); 
+/*$ur = "https://pub.s10.exacttarget.com/svrj3j5s22v?MessageId=".$msid."&Phone=".$from."&Message=".$mensaje."&From=".$from."&To=".$to."&Direction=".$direction."&Date=none&Status=".$status;."&Campaign=".$keyword;*/
+return response( ['status' => $status]);
+?>
